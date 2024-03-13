@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Chat</title>
+</head>
+<body>
+    <h1>AI Chat</h1>
+    <div id="chat-history">
+        <!-- 显示聊天记录 -->
+        {% for query, response in chats %}
+            <p><strong>You:</strong> {{ query }}</p>
+            {% if response %} <!-- 如果有AI的回复，则显示它 -->
+            <p><strong>AI:</strong> {{ response }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- 用户输入表单 -->
+    <form id="chat-form">
+        <input type="text" id="query" placeholder="Type your message...">
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var query = document.getElementById('query').value;
+            if (query) {
+                fetch('/liaotian', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response) {
+                        // 将用户的查询和AI的回复添加到chat_history中
+                        var newChat = [query, data.response];
+                        chat_history.push(newChat);
+                        // 更新页面显示
+                        document.getElementById('chat-history').innerHTML += `<p><strong>You:</strong> ${query}</p><p><strong>AI:</strong> ${data.response}</p>`;
+                        document.getElementById('query').value = '';
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
