@@ -1,0 +1,27 @@
+# 生成唯一的文件名
+    video_uuid = str(uuid.uuid4())
+    video_filename = f"{video_uuid}.mp4"
+    video_path = os.path.join('uploads', video_filename)
+
+    try:
+        with open(video_path, 'wb') as video_file:
+            video_file.write(request.data)
+
+        # 准备播放页面的HTML模板
+        play_template = """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Video Player</title>
+        </head>
+        <body>
+            <video width="640" height="480" controls>
+                <source src="{{video_url}}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </body>
+        </html>
+        """
+        # 使用渲染模板字符串方法填充视频URL
+        rendered_page = render_template_string(play_template, video_url=f"/videos/{video_uuid}.mp4")

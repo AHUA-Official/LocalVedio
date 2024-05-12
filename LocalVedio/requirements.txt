@@ -1,0 +1,8 @@
+Flask==3.0.3
+Flask_Cors==4.0.0
+opencv_python==4.9.0.80
+openpyxl==3.1.2
+Requests==2.31.0
+sparkai==0.3.0
+websocket_client==1.8.0
+Werkzeug==3.0.3
